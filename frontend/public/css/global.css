@@ -1,0 +1,320 @@
+@import url("https://fonts.googleapis.com/css2?family=Baskervville:ital,wght@0,400..700;1,400..700&family=Bebas+Neue&family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Manrope:wght@200..800&family=Noto+Serif+KR:wght@200..900&family=Oswald:wght@200..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=SUSE:wght@100..800&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+article,
+aside,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section {
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+ul,
+ol,
+li {
+  list-style: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+html,
+body {
+  font-family: Manrope;
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+
+  height: 600px;
+  overflow-y: auto;
+}
+
+.logo {
+  margin-bottom: 80px;
+  color: #333;
+  text-align: center;
+}
+
+.logo h1 {
+  font-size: 50px;
+}
+
+.logo p {
+  font-size: 30px;
+}
+
+#index-container,
+#form-login,
+#form-signup {
+  width: 100%;
+  justify-items: center;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+button {
+  width: 70%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  margin: 20px auto 0;
+  display: block;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+a {
+  display: block;
+  margin-top: 16px;
+  color: #4caf50;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/*** [ Profile ] ****/
+.profile-logo {
+  margin-bottom: 15px;
+}
+
+.profile-logo p {
+  font-size: 25px;
+  font-weight: bolder;
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+}
+
+.profile-setting {
+  display: flex;
+  gap: 20px;
+  align-self: end;
+}
+
+.profile-setting a {
+  margin: 0 0 15px 0;
+  padding: 0;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 4px rgba(76, 175, 80, 0.3);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.diary-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.diary-info {
+  max-height: 80px;
+  overflow: hidden;
+}
+
+.diary-info p,
+.diary-info strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 5px 0;
+}
+
+.diary-info strong {
+  font-size: 1.1em;
+}
+
+.diary-info p {
+  line-height: 1.4;
+}
+
+.diary-item {
+  background-color: #ffecec;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.diary-item strong {
+  font-size: 15px;
+  color: #333;
+}
+
+.diary-item p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+#add-diary-btn {
+  align-self: start;
+  font-size: 20px;
+  font-weight: bolder;
+  margin-bottom: 15px;
+}
+
+.diary-item .edit-btn,
+.diary-item .delete-btn {
+  width: 70px;
+  padding: 6px 0;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.diary-item .edit-btn {
+  background-color: #4caf50;
+  margin-top: 8px;
+}
+.diary-item .edit-btn:hover {
+  background-color: #45a049;
+}
+
+.diary-item .delete-btn {
+  background-color: #f44336;
+  margin-top: 4px;
+}
+.diary-item .delete-btn:hover {
+  background-color: #e53935;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 25px 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.close {
+  align-self: flex-end;
+  font-size: 20px;
+  cursor: pointer;
+  color: #888;
+  transition: 0.2s;
+}
+
+.close:hover {
+  color: #333;
+}
+
+.diary-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  background: #f9f9f9;
+}
+
+.diary-actions {
+  display: flex;
+}
+
+.diary-actions a {
+  margin-left: 10px;
+  text-decoration: none;
+  color: #007bff;
+  cursor: pointer;
+}

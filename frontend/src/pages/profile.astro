@@ -1,0 +1,219 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Diary Search</title>
+    <link rel="stylesheet" href="/css/global.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="profile-logo">
+        <p>Memories Recorder</p>
+      </div>
+      <div class="profile-setting">
+        <a id="btn-logout">Log Out</a>
+        <a id="btn-account">Account Settings</a>
+      </div>
+
+      <div id="account-modal" class="modal account-modal">
+        <div class="modal-content account-modal-content">
+          <span id="close-modal" class="close">&times;</span>
+          <h3>Manage Account</h3>
+          <div id="change-password-form">
+            <input id="old-password" type="password" placeholder="Current Password" />
+            <input id="new-password" type="password" placeholder="New Password" />
+            <button id="btn-change-password">Change Password</button>
+          </div>
+          <hr />
+          <button id="btn-delete-account">Delete Account</button>
+        </div>
+      </div>
+
+      <input type="text" id="searchInput" placeholder="Search diaries..." />
+      <a id="add-diary-btn">Add Diary</a>
+
+      <ul class="diary-list" id="diaryList"></ul>
+
+      <div id="diary-modal" class="modal diary-modal">
+        <div class="modal-content diary-modal-content">
+          <span id="diary-close" class="close">&times;</span>
+          <h3 id="diary-modal-title">Add Diary</h3>
+          <input id="diary-title" type="text" placeholder="Title" />
+          <textarea id="diary-content" rows="4" placeholder="Content"></textarea>
+          <button id="save-diary-btn">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      const SERVER_URL = "http://localhost:3500";
+
+      const logoutBtn = document.getElementById("btn-logout");
+      const accountBtn = document.getElementById("btn-account");
+      const modal = document.getElementById("account-modal");
+      const closeModal = document.getElementById("close-modal");
+      const changePasswordBtn = document.getElementById("btn-change-password");
+      const deleteAccountBtn = document.getElementById("btn-delete-account");
+      const oldPasswordInput = document.getElementById("old-password");
+      const newPasswordInput = document.getElementById("new-password");
+
+      async function safeFetch(url, options) {
+        try {
+          const res = await fetch(url, options);
+          const contentType = res.headers.get("content-type");
+          let data = {};
+          if (contentType && contentType.includes("application/json")) {
+            data = await res.json();
+          } else {
+            data = { message: `Unexpected server response: ${await res.text()}` };
+          }
+          return { ok: res.ok, data };
+        } catch (err) {
+          console.error("Fetch error:", err);
+          return { ok: false, data: { message: "Request failed." } };
+        }
+      }
+
+      logoutBtn.addEventListener("click", async () => {
+        const { ok, data } = await safeFetch(`${SERVER_URL}/users/logout`, {
+          method: "POST",
+          credentials: "include"
+        });
+        alert(data.message);
+        if (ok) window.location.href = "/";
+      });
+
+      accountBtn.addEventListener("click", () => { modal.style.display = "flex"; });
+      closeModal.addEventListener("click", () => { modal.style.display = "none"; });
+      window.addEventListener("click", e => { if(e.target === modal) modal.style.display = "none"; });
+
+      changePasswordBtn.addEventListener("click", async () => {
+        const oldPassword = oldPasswordInput.value;
+        const newPassword = newPasswordInput.value;
+        if (!oldPassword || !newPassword) return alert("Please fill in both fields.");
+
+        const { ok, data } = await safeFetch(`${SERVER_URL}/users/change-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ oldPassword, newPassword })
+        });
+
+        alert(data.message);
+        if (ok) {
+          modal.style.display = "none";
+          oldPasswordInput.value = "";
+          newPasswordInput.value = "";
+        }
+      });
+
+      deleteAccountBtn.addEventListener("click", async () => {
+        if (!confirm("Are you sure you want to delete your account?")) return;
+
+        const { ok, data } = await safeFetch(`${SERVER_URL}/users/delete`, {
+          method: "DELETE",
+          credentials: "include"
+        });
+
+        alert(data.message);
+        if (ok) {
+          modal.style.display = "none";
+          window.location.href = "/";
+        }
+      });
+
+      let diaries = [];
+
+      const diaryList = document.getElementById('diaryList');
+      const searchInput = document.getElementById('searchInput');
+      const addDiaryBtn = document.getElementById('add-diary-btn');
+      const diaryModal = document.getElementById('diary-modal');
+      const diaryClose = document.getElementById('diary-close');
+      const saveDiaryBtn = document.getElementById('save-diary-btn');
+      const diaryTitleInput = document.getElementById('diary-title');
+      const diaryContentInput = document.getElementById('diary-content');
+      const diaryModalTitle = document.getElementById('diary-modal-title');
+      let currentEditId = null;
+
+      function renderDiaryList() {
+        diaryList.innerHTML = '';
+        diaries.forEach(d => {
+          const li = document.createElement('li');
+          li.dataset.id = d.id;
+          li.dataset.title = d.title.toLowerCase();
+          li.dataset.content = d.content.toLowerCase();
+          li.innerHTML = `
+            <div class="diary-info">
+              <p>${d.date}</p>
+              <strong>${d.title}</strong>
+              <p>${d.content}</p>
+            </div>
+            <div class="diary-actions">
+              <a class="edit-btn">Edit</a>
+              <a class="delete-btn">Delete</a>
+            </div>
+          `;
+          diaryList.appendChild(li);
+
+          li.querySelector('.edit-btn').addEventListener('click', () => {
+            diaryModal.style.display = 'flex';
+            diaryModalTitle.textContent = 'Edit Diary';
+            diaryTitleInput.value = d.title;
+            diaryContentInput.value = d.content;
+            currentEditId = d.id;
+          });
+
+          li.querySelector('.delete-btn').addEventListener('click', () => {
+            if(confirm('Delete this diary?')) {
+              diaries = diaries.filter(item => item.id !== d.id);
+              renderDiaryList();
+            }
+          });
+        });
+      }
+
+      renderDiaryList();
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        Array.from(diaryList.children).forEach(li => {
+          const title = li.dataset.title;
+          const content = li.dataset.content;
+          li.style.display = (title.includes(query) || content.includes(query)) ? '' : 'none';
+        });
+      });
+
+      addDiaryBtn.addEventListener('click', () => {
+        diaryModal.style.display = 'flex';
+        diaryModalTitle.textContent = 'Add Diary';
+        diaryTitleInput.value = '';
+        diaryContentInput.value = '';
+        currentEditId = null;
+      });
+
+      diaryClose.addEventListener('click', () => diaryModal.style.display = 'none');
+      window.addEventListener('click', e => { if(e.target === diaryModal) diaryModal.style.display = 'none'; });
+
+      saveDiaryBtn.addEventListener('click', () => {
+        const title = diaryTitleInput.value.trim();
+        const content = diaryContentInput.value.trim();
+        if(!title || !content) return alert('Please fill in both fields.');
+
+        if(currentEditId) {
+          const index = diaries.findIndex(d => d.id === currentEditId);
+          diaries[index].title = title;
+          diaries[index].content = content;
+        } else {
+          diaries.push({
+            id: Date.now(),
+            date: new Date().toISOString().split('T')[0],
+            title,
+            content
+          });
+        }
+        renderDiaryList();
+        diaryModal.style.display = 'none';
+      });
+    </script>
+  </body>
+</html>
